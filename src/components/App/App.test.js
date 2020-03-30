@@ -5,7 +5,7 @@ import renderer from 'react-test-renderer';
 import configureStore from 'redux-mock-store';
 
 import ConnectedApp, { App } from './App';
-import { withMemoryRouter } from 'utils';
+import { withMemoryRouter, withThemeProp } from 'utils';
 import { initialState } from 'reducers/application';
 
 jest.mock('components/Footer/Footer', () =>
@@ -17,9 +17,9 @@ jest.mock('components/Header/Header', () =>
 jest.mock('components/ToastDrawer/ToastDrawer', () =>
   require('utils').mockComponent('ToastDrawer')
 );
-jest.mock('components/ThemeContainer/ThemeContainer', () =>
-  require('utils').mockComponent('ThemeContainer')
-);
+jest.mock('../ThemeHOC/withTheme', () => () => Component => props => (
+  <Component {...props} />
+));
 jest.mock('pages', () => {
   const { mockComponent } = require('utils');
 
@@ -59,7 +59,9 @@ describe('<App />', () => {
         id: 123,
         name: 'Doe'
       },
-      theme: { name: 'default' }
+      theme: {
+        name: 'default'
+      }
     }
   });
 
@@ -247,7 +249,8 @@ describe('<App />', () => {
   });
 
   it('redirects to login for private route', () => {
-    const RoutedApp = withMemoryRouter(ConnectedApp, {
+    const ThemedApp = withThemeProp(ConnectedApp);
+    const RoutedApp = withMemoryRouter(ThemedApp, {
       initialEntries: ['/user/recipes']
     });
     const component = renderer.create(

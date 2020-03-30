@@ -55,6 +55,15 @@ export const withMemoryRouter = (
 );
 
 /**
+ * Wraps a React component in a <ThemeWrapper> suitable for testing
+ *
+ * @param {Component} WrappedComponent React component to wrap
+ */
+export const withThemeProp = WrappedComponent => props => (
+  <WrappedComponent theme={'default'} {...props} />
+);
+
+/**
  * Interpolate strings from the `params` object into the `url`.
  *
  * @param {object} endpoint Object with `url` and optional `params` object
